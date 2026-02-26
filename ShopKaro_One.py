@@ -126,9 +126,21 @@ def callback():
         body={"requests": requests}
     ).execute()
 
+    permission = {
+        "type": "user",
+        "role": "writer",
+        "emailAddress": "hd-839@last-488313.iam.gserviceaccount.com"   # 👈 Change this
+    }
+
+    drive_service.permissions().create(
+        fileId=sheet_id,
+        body=permission
+    ).execute()
+
     return f"✅ Setup Complete<br><a href='{sheet_url}' target='_blank'>Open Sheet</a>"
 
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(debug=True)
+
 
