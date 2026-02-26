@@ -1,1 +1,1 @@
-web: gunicorn ShopKaro-One:app
+web: gunicorn ShopKaro_One:app
