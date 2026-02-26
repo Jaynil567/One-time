@@ -54,60 +54,29 @@ def db():
 # ---------- HOME ----------
 @app.route('/')
 def Home():
-    return render_template("Home.html")
-
-# ---------- CUSTOMER LOGIN ----------
-# ---------- Logout ----------
-# ---------- Password reset ----------
-# ---------- CUSTOMER PORTAL ----------
-
-# ---------- MEDIATOR LOGIN ----------
-@app.route('/Mediator_Login',methods=['GET','POST'])
-def Mediator_Login():
-    msg=""
-    if request.method == 'POST':
-        MUN=request.form['MUN']
-        MP=request.form['MP']
-
-        conn = db()
-        cur=conn.cursor()
-
-        cur.execute("SELECT * FROM ShopKaro_mediator WHERE username=%s", (MUN,))
-        row = cur.fetchone()
-
-        if row is None:
-            msg = "Username not found"
-        elif row[4] != MP:
-            msg = "Incorrect password"
-        else:
-            cur.close()
-            conn.close()
-            session['Med Username'] = row[1]
-            session['Med name'] = row[2]
-            session['Med num'] = row[3]
-            session['Med passw'] = row[4]
-            return redirect('/login')
-        cur.close()
-        conn.close()
-    return render_template("Mediator_Login.html",msg=msg)
-
-
-
-# ---------- MEDIATOR PORTAL ----------
-
-
-
+    return redirect('/login')
 
 @app.route("/login")
 def login():
 
-    username = session.get("Med Username")
-
-    if not username:
-        return redirect("/Mediator_Login")
+    username = 'shopkaro1'
 
     # -------- Check Token in DB --------
-   
+    conn = db()
+    cur = conn.cursor(dictionary=True)
+
+    cur.execute("""
+        SELECT token FROM ShopKaro_mediator
+        WHERE username=%s
+    """, (username,))
+
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    # If token exists → skip Google login
+    if row and row["token"]:
+        return redirect("/create-sheet")
 
     # -------- Else Google OAuth --------
     flow = Flow.from_client_secrets_file(
@@ -197,7 +166,7 @@ from google.auth.transport.requests import Request
 @app.route("/create-sheet")
 def create_sheet():
 
-    username = session["Med Username"]
+    username = 'shopkaro1'
 
     creds = get_mediator_creds(username)
 
@@ -349,8 +318,7 @@ def create_sheet():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080,debug=True)
-
+    app.run(host="0.0.0.0", port=8080)
 
 
 
