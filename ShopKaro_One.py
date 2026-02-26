@@ -107,21 +107,7 @@ def login():
         return redirect("/Mediator_Login")
 
     # -------- Check Token in DB --------
-    conn = db()
-    cur = conn.cursor(dictionary=True)
-
-    cur.execute("""
-        SELECT token FROM ShopKaro_mediator
-        WHERE username=%s
-    """, (username,))
-
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
-
-    # If token exists → skip Google login
-    if row and row["token"]:
-        return redirect("/create-sheet")
+   
 
     # -------- Else Google OAuth --------
     flow = Flow.from_client_secrets_file(
@@ -364,6 +350,7 @@ def create_sheet():
 # ---------- RUN ----------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080,debug=True)
+
 
 
 
