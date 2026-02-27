@@ -1,11 +1,1 @@
-Flask
-mysql-connector-python
-gspread
-oauth2client
-cloudinary
-gunicorn
-sendgrid
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
-google-api-python-client
+
